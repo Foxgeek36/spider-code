@@ -96,7 +96,7 @@ class TianGou:
         while True:
             # 如果不加等待,在滑动后元素无法识别
             time.sleep(1)
-            for i in range(1,2):
+            for i in range(1,3):
                 try:
                     # 定位框架
                     frame = self.d(resourceId="com.tencent.mm:id/eu8", className="android.widget.LinearLayout",
