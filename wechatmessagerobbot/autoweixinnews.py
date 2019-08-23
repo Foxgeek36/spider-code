@@ -125,14 +125,14 @@ def text_reply(msg):
         # 6小时以上的消息自动回复,以内不予响应
         exist = redis_cli.get(msg.user['NickName'])
         if not exist:
-            msg.user.send('您好！在忙，待会回您哦 > _ <')
+            msg.user.send('> _ <')
             redis_cli.set(msg.user['NickName'], int(time.time()))
             print('保存成功{}'.format(msg.user['NickName']))
         else:
             oldtime = int(exist.decode())
             TimeDifference = time.time() - oldtime
             if TimeDifference > 60 * 60 * 6:
-                msg.user.send('您好！在忙，待会回您哦 > _ <')
+                msg.user.send('> _ <')
                 # redis_cli.set(msg.user['NickName'], time.time())
                 redis_cli.set(msg.user['NickName'], int(time.time()))
                 print('保存成功{}'.format(msg.user['NickName']))
