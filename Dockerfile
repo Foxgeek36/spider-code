@@ -1,4 +1,4 @@
-FROM baseimage
+FROM fosundragon/scrapy-baseimage
 MAINTAINER dragon <shixl@fosun.com>
 #WORKDIR ./wechattiangou
 WORKDIR /app
