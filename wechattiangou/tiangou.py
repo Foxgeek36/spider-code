@@ -139,5 +139,8 @@ class TianGou:
 
 
 if __name__ == '__main__':
+    """
+    存在滑动实效的问题
+    """
     tiangou = TianGou('2244261a')
     tiangou.run_spider()
