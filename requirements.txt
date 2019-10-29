@@ -71,7 +71,7 @@ parse==1.12.1
 parsel==1.5.2
 passlib==1.7.1
 pika==1.1.0
-Pillow==6.1.0
+Pillow==6.2.0
 pinyin==0.4.0
 ply==3.11
 progress==1.5
