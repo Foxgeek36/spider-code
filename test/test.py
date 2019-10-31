@@ -1,98 +1,34 @@
-from lxml import etree
+from redis import Redis
+redis_cli = Redis()
+
+# cookies = redis_cli.hget('elem_cookies', 1)
+# print(cookies)
+#
+# redis_cli.hset('kk',1,{1:2})
+
+
 import requests
-import execjs
+url = 'https://h5.ele.me/restapi/shopping/v3/restaurants?latitude=31.272856&longitude=121.528798&offset=0&limit=30'
+headers = {
+
+# ":authority":"h5.ele.me",
+"cache-control":"max-age=0",
+"dnt":"1",
+"upgrade-insecure-requests":"1",
+"user-agent":"Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Mobile Safari/537.36",
+"sec-fetch-mode":"navigate",
+"sec-fetch-user":"?1",
+"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+"sec-fetch-site":"none",
+"accept-encoding":"gzip, deflate, br",
+"accept-language":"zh-CN,zh;q=0.9,en;q=0.8,und;q=0.7",
+# "cookie":"_utrace=39f59f46c00c1426b061ee8e6c4a1377_2019-10-17; ut_ubt_ssid=5lbntve4fdzmjamzs7awsrjmbyvd06b5_2019-10-17; perf_ssid=bwkkkqpat2jc4ur3pqdjquebpdcsmxnx_2019-10-17; ubt_ssid=4guwydbi3b820plxfmqdn5liddgmspx4_2019-10-17; cna=HwkvFqENtSICAbSn5aIEoDLV; track_id=1571301599|67025959f4b96cd72d97e5ca621bb9ccf1a21df2e7fe932bf9|199dd45f42c41d4c79ecf3c6dd27abf6; USERID=884699394; UTUSER=884699394; SID=iY2uM0G4oQJMWN2uXl2xNc2ro4YV7KYa3wPQ; ZDS=1.0|1571301599|lWwcTSSWEsRmmWQ4K4B+kLw3R4At1aouDU9QvaFPnhSmu/i1g4lmX2EuNAjtBLU+ixxEGhXFWCtdrTBWOJX70A==; _bl_uid=wIkwU106u5kgn8esXmp86F9at2LI; tzyy=550ca0716d20a77147b2bc93c03e1f16; isg=BK-vfpUOLo6ilyq_hgypwn1CPsqz_m4XIxrNhcE8Sp4lEM0SySRvxGCClmaLbNvu; pizza73686f7070696e67=1MkK5-oAczE99P7yXnEoaM43pG5XLIDxpORG3HrPk5GzrYSoCF0OlZS_aULEU65q",
+
+}
 
 
-class DiscountInfo:
-    def get_htmlcontent(self):
-        """
-        测试使用，从本地拿到Html
-        :return: html dom
-        """
-        with open('大众点评优惠信息.html')as f:
-            html = f.read().strip()
-            html_dom = etree.HTML(html)
-            return html_dom
-
-    def product_cookies(self):
-        """
-        需要配置Nodejs环境
-        :return: js生成的cookies
-        """
-        content = """
-        function Gn() {
-            return +new Date;
-        };
-        function Hr() {
-            return Math.floor(1 + 65535 * Math.random()).toString(16).substring(1);
-        };
-        function findLongR() {
-            return Gn().toString(16) + "-" + Hr() + "-" + Hr() + "-" + Hr();
-        };
-        """
-        js = execjs.compile(content)
-        _lxsdk_s = js.call('findLongR')
-        return _lxsdk_s
-
-    def request_htmlcontent(self):
-        """
-        携带cookies和请求头访问m 端拿到详情页数据
-        :return: html source code dom tree
-        """
-        headers = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,und;q=0.7",
-            "Connection": "keep-alive",
-            "Host": "m.dianping.com",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "none",
-            "Sec-Fetch-User": "?1",
-            "Cookie": "_lxsdk_s={}".format(self.product_cookies()),
-            "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Mobile Safari/537.36",
-        }
-        url = 'https://m.dianping.com/shop/131710927'
-
-        proxies = {
-			'http': 'http://127.0.0.1:8080',
-			'https': 'http://127.0.0.1:8080'
-		}
-
-        response = requests.get(url,proxies=proxies, headers=headers,verify=False)
-        html_dom = etree.HTML(response.text)
-        return html_dom
-
-    def parse(self):
-        """
-        抽取优惠信息（团购）的详情页url，标题，销量，促销价格，原始价格
-        :return: 所有优惠信息列表
-        """
-        html = self.request_htmlcontent()
-        tuaninfos = html.xpath('//div[@class="tuan-list"]/a')
-        tuaninfos_list = []
-        for tuan in tuaninfos:
-            tuan_detail_url = tuan.xpath('./@href')[0]
-            tuan_title = tuan.xpath('.//div[@class="newtitle"]/text()')[0]
-            sales_num = tuan.xpath('.//span[@class="soldNumNew"]/text()')[0]
-            low_price = tuan.xpath('.//div[@class="symbol"]/following::div[1]/text()')[0]
-            low_price_money_tag = tuan.xpath('.//div[@class="symbol"]/text()')[0]
-            high_price = tuan.xpath('.//div[@class="symbol2"]/following::div[1]/text()')[0]
-            high_price_money_tag = tuan.xpath('.//div[@class="symbol2"]/text()')[0]
-            tuaninfo = {
-                'tuan_detail_url': tuan_detail_url,
-                'tuan_title': tuan_title,
-                'sales_num': sales_num,
-                'low_price': low_price,
-                'low_price_money_tag': low_price_money_tag,
-                'high_price': high_price,
-                'high_price_money_tag': high_price_money_tag,
-            }
-            tuaninfos_list.append(tuaninfo)
-        return tuaninfos_list
+cookies = {'SID': 'nF27dfFzEiuJutPB4oFHtDB81z0fXo2yAFkg', 'USERID': '884699394', 'UTUSER': '884699394', 'ZDS': '1.0|1571306095|lWwcTSSWEsRmmWQ4K4B+kD6ib8hfSWXCnjrzTjBrK1D5Mky66LXDNBpjo5hVFpZO7Yeygepe83QzkkI2ixFbmg==','track_id': '1571306095|3931143fc1b9afda6f68a6dd9676c9e9d07882240ffd3167ea|9a3d2b64bc58f15fc273df5e6e49f7ea'}
 
 
-if __name__ == '__main__':
-    discount_info = DiscountInfo()
-    tuaninfos = discount_info.parse()
-    print(tuaninfos)
+r = requests.get(url,headers=headers,cookies=cookies)
+print(r.status_code,r.text)

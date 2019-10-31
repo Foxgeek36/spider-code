@@ -66,7 +66,10 @@ class TianGou:
         # start wechat
         self.d.app_start('com.tencent.mm')
         # select friends zone
-        self.d(resourceId="com.tencent.mm:id/sh", className="android.widget.ImageView", instance=2).click()
+        # self.d(resourceId="com.tencent.mm:id/sh", className="android.widget.ImageView", instance=2).click()
+        # self.d(resourceId="com.tencent.mm:id/djv", text="发现")
+        # self.d.click(0.628, 0.889).click()
+        # self.d.xpath('//*[@resource-id="com.tencent.mm:id/bv"]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[3]/android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]/android.widget.ImageView[1]')
         # open friends zone
         self.d(className="android.widget.LinearLayout", instance=7).click()
 
@@ -91,11 +94,11 @@ class TianGou:
         swipe + click stars
         """
         # 否则滑动失效
-        time.sleep(1)
+        time.sleep(0.5)
         self.d.swipe(500, 2000, 500, 1500)
         while True:
             # 如果不加等待,在滑动后元素无法识别
-            time.sleep(1)
+            time.sleep(0.5)
             for i in range(1,3):
                 try:
                     # 定位框架
@@ -121,7 +124,7 @@ class TianGou:
                 except:
                     break
             #当前可见的页无需要点赞的继续往下滑动
-            time.sleep(1)
+            time.sleep(0.5)
             # d(scrollable=True).scroll(steps=2)
             # 上滑
             self.d.swipe(500, 2000, 500, 1200)
