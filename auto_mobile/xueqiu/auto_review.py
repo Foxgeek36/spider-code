@@ -21,8 +21,6 @@ class XueQiurobot:
 
     def open_xueqiu(self):
         """
-        打开微信朋友圈
-        :return:
         """
         # start wechat
         self.d.app_start('com.xueqiu.android')
