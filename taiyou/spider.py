@@ -25,7 +25,10 @@ class Spider:
 
 
     def request(self,url):
-        response = requests.get(url,headers=self.headers)
+        try:
+            response = requests.get(url,headers=self.headers)
+        except:
+            return ''
         tree = etree.HTML(response.text)
         patterns = tree.xpath('//div[@class="video-list"]/a[@class="videolink"]')
         new_videos = "\n\n"
