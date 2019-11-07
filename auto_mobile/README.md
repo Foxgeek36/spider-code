@@ -10,3 +10,4 @@
 |wecahtmessagerobbot |uiautomator2微信消息自动回复机器人                |
 |wechattiangou       |uiautomator2微信朋友圈自动点赞舔狗程序             |
 |xueqiu              |uiautomator2雪球自动点赞                         |
+|soul_click_star     |uiautomator2 soul自动化点赞                      |
