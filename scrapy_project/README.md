@@ -7,7 +7,7 @@
 |ele                      |饿了么外卖爬虫                                  |　
 
 
-### scrapy&scrapy-redis存在的坑
+### scrapy & scrapy-redis存在的坑
 
 中间件添加User-Agent无效
 ```
@@ -99,7 +99,5 @@ class ShopsBaseinfo(Spider):
 
     def parse(self, response):
         self.logger.info(f"Parse shop_detail {response.url}")
-
-
 
 ```

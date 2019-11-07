@@ -7,6 +7,7 @@ from lxml import etree
 from redis import Redis
 from hashlib import md5
 from logging import getLogger
+import re
 
 
 class Spider:
@@ -35,6 +36,10 @@ class Spider:
         videos_list = []
         for pattern in patterns:
             href = pattern.xpath('./@href')[0]
+            # if 'http://toutiao.com/preview_article/?pgc_id=6733889782235005447?app=video_article&;scheme=snssdk141%3A%2F%2Fdetail%3Fgroupid%3D6733889782235005447'
+            if 'preview_article' in href:
+                id = re.findall('pgc_id=(\d+)\?app=video_article',href)[0]
+                href = f'http://toutiao.com/group/{id}'
             title = pattern.xpath('.//p[@class="title"]/text()')[0]
             content = "\n".join([title,href])
             uuid = md5(content.encode()).hexdigest()
@@ -50,24 +55,22 @@ class Spider:
     def send_email(self, text):
         new_time = time.strftime("%Y-%m-%d-%H:%M:%S")
         sender = 'shixiaolongfw@163.com'  # 你发送邮箱的账号
-        receivers = '208720471@qq.com'  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
+        receivers = '654921690@qq.com'  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
         message = MIMEText("""你好当前时间{}更新内容如下：\n\n{}""".format(new_time, text))
         message['From'] = "{}项目".format('太友短视频监控服务')
-        message['To'] = f"<{receivers}>"
+        message['To'] = f"{receivers}"
         # 标题
         subject = '视频有更新'
         message['Subject'] = Header(subject, 'utf-8')
-
         try:
             smtpObj = smtplib.SMTP()
             smtpObj.connect("smtp.163.com", 25)  # 25 为 SMTP 端口号
             smtpObj.login(sender, "shixiaolong22")
-            smtpObj.sendmail(sender, receivers, message.as_string())
+            smtpObj.sendmail(sender, receivers.split(','), message.as_string())
             print("邮件发送成功")
         except smtplib.SMTPException as e:
             print("Error: 无法发送邮件", e)
-
 
     def main(self):
         """
