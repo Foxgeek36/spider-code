@@ -13,4 +13,7 @@
 - 但是反扒的核心难点，看完代码基本上都能解决了，如果你想直接复制源码跑是不行的
 - 如果还有解决不懂得地方，欢迎私聊wechat: pythonsp 共同成长
 
+***点个赞啊老铁***
+--
+![star](./images/star.jpeg)
 ![fu](./images/fufufuuf.jpg)
