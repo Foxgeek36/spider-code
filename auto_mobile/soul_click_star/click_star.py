@@ -1,10 +1,14 @@
 import uiautomator2 as u2
 import time
 import os
+import logging
 from redis import Redis
+
 redis_cli = Redis()
 
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('TaiYou Monitor')
 
 
 class TianGou:
@@ -25,6 +29,9 @@ class TianGou:
                 # 初始化uiautomator2 否则有可能连不上
                 os.system('python -m uiautomator2 init')
         self.num = 0
+        # 给最新的动态点赞
+        self.lastest = False
+        self.selectt_city = True
 
     def open_soul(self):
         """
@@ -33,6 +40,54 @@ class TianGou:
         # start soul
         self.d.app_start('cn.soulapp.android')
         time.sleep(3)
+        self.change_model()
+
+    def change_model(self):
+        """
+        切换帖子列表的模式
+        """
+        if self.lastest:
+            self.d(resourceId="cn.soulapp.android:id/tv_tab", text="最新").click()
+            logger.info('切换到最新帖子模式')
+        # 搜索文本内容包含上海的，提高效率（一定要有上海的搜索记录才行）
+        if self.selectt_city:
+            logger.info('切换到上海')
+            try:
+                self.d(resourceId="cn.soulapp.android:id/searchLayout").click()
+            except:
+                self.d(resourceId="cn.soulapp.android:id/ivSearch").click()
+            time.sleep(0.5)
+            self.d.xpath('//*[@resource-id="cn.soulapp.android:id/toolbar_search"]/android.widget.RelativeLayout[1]').set_text('上海')
+            # self.d(resourceId="cn.soulapp.android:id/text_search_record",text="上海").click()
+            self.d.press('enter')
+
+    def _click(self):
+        # 不确定１号框架可以点击还是２号框架可以点击，测试发现每次最多只有一个可点击
+        for i in range(1, 3):
+            # 定位框架
+            frame = self.d(resourceId="cn.soulapp.android:id/item_post_all", className="android.view.ViewGroup",
+                           instance=i)
+            try:
+                center = frame.center()
+            except:
+                logger.error(f'{i},无法获取中心位置')
+                continue
+            # 可能图标还没漏出来
+            if center[1] > 1250:
+                logger.warning(f'{i},中心位置大于1250')
+                continue
+            # 可能没有文字
+            try:
+                name = frame.child(resourceId="cn.soulapp.android:id/expandable_text").get_text()
+            except:
+                name = str(time.time())
+            if redis_cli.sismember('soul', name):
+                logger.info(f'存在该用户    {name}')
+                continue
+            frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).click_exists(timeout=1)
+            self.num += 1
+            logger.info(f'{self.num},点击完成')
+            redis_cli.sadd('soul', name)
 
 
     def doit(self):
@@ -45,32 +100,7 @@ class TianGou:
         while True:
             # 如果不加等待,在滑动后元素无法识别
             time.sleep(0.5)
-            for i in range(1,3):
-                # try:
-                # 定位框架
-                frame = self.d(resourceId="cn.soulapp.android:id/item_post_all", className="android.view.ViewGroup",
-                               instance=i)
-                try:
-                    center = frame.center()
-                except:
-                    print(f'{i},无法获取中心位置')
-                    continue
-                # 可能图标还没漏出来
-                if center[1] > 1250:
-                    print(f'{i},中心位置大于1250')
-                    continue
-                # 可能没有文字
-                try:
-                    name = frame.child(resourceId="cn.soulapp.android:id/expandable_text").get_text()
-                except:
-                    name = str(time.time())
-                if redis_cli.sismember('soul',name):
-                    print(f'存在该用户    {name}')
-                    continue
-                frame.child(resourceId="cn.soulapp.android:id/iv_like",clickable=True).click_exists(timeout=1)
-                self.num += 1
-                print(f'{self.num},点击完成')
-                redis_cli.sadd('soul',name)
+            self._click()
             self.d.swipe(500, 1500, 500, 1300)
 
     def run_spider(self):
