@@ -8,7 +8,7 @@ redis_cli = Redis()
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('TaiYou Monitor')
+logger = logging.getLogger('Soul Monitor')
 
 
 class TianGou:
@@ -31,7 +31,7 @@ class TianGou:
         self.num = 0
         # 给最新的动态点赞
         self.lastest = False
-        self.selectt_city = True
+        self.selectt_city = False
 
     def open_soul(self):
         """
@@ -73,7 +73,7 @@ class TianGou:
                 logger.error(f'{i},无法获取中心位置')
                 continue
             # 可能图标还没漏出来
-            if center[1] > 1250:
+            if center[1] > 1200:
                 logger.warning(f'{i},中心位置大于1250')
                 continue
             # 可能没有文字
@@ -82,17 +82,24 @@ class TianGou:
             except:
                 name = str(time.time())
             if redis_cli.sismember('soul', name):
-                logger.info(f'存在该用户    {name}')
+                logger.info(f'存在该用户')
                 continue
+            # 判断小心心有没有暴露出来
+            try:
+                star_distance = frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).center()
+                if star_distance[1] > 1800:
+                    continue
+            except:
+                pass
             frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).click_exists(timeout=1)
             self.num += 1
-            logger.info(f'{self.num},点击完成')
+            logger.info(f'{self.num},点击完成,{name}')
             redis_cli.sadd('soul', name)
 
 
     def doit(self):
         """
-        swipe + click stars
+        swipe + click stars点击完成
         """
         # 否则滑动失效
         time.sleep(0.5)
@@ -113,7 +120,7 @@ class TianGou:
 
 if __name__ == '__main__':
     """
-    存在滑动实效的问题
+    存在将star 点错的问题
     """
     tiangou = TianGou('2244261a')
     tiangou.run_spider()
