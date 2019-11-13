@@ -3,7 +3,7 @@ import time
 import os
 import logging
 from redis import Redis
-
+from greet import Greet
 redis_cli = Redis()
 
 
@@ -70,11 +70,11 @@ class TianGou:
             try:
                 center = frame.center()
             except:
-                logger.error(f'{i},无法获取中心位置')
+                # logger.error(f'{i},无法获取中心位置')
                 continue
             # 可能图标还没漏出来
             if center[1] > 1200:
-                logger.warning(f'{i},中心位置大于1250')
+                # logger.warning(f'{i},中心位置大于1200')
                 continue
             # 可能没有文字
             try:
@@ -94,6 +94,7 @@ class TianGou:
             frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).click_exists(timeout=1)
             self.num += 1
             logger.info(f'{self.num},点击完成,{name}')
+            Greet().greet(self.d,frame)
             redis_cli.sadd('soul', name)
 
 
@@ -112,7 +113,6 @@ class TianGou:
 
     def run_spider(self):
         """
-        微信朋友圈自动点赞,舔狗程序
         """
         self.open_soul()
         self.doit()
