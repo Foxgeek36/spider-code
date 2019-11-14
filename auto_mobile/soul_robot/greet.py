@@ -60,10 +60,12 @@ class Greet:
         self.write_send_out(d)
 
     def write_send_out(self,d):
-
+        time.sleep(1)
+        nick_name = self.black_list(d)
+        if redis_cli.sismember('soul:nicknames', nick_name):
+            return
         try:
             # 发imoge
-            time.sleep(1)
             d.click(0.144, 0.795)
         except:
             print('imog发不了')
@@ -72,6 +74,8 @@ class Greet:
         # 发送
         d(resourceId="cn.soulapp.android:id/btn_send", clickable=True).click()
         logger.info('打招呼成功')
+        redis_cli.sadd('soul:nicknames',nick_name)
+        logger.info(f'昵称{nick_name} 已拉黑')
 
     def back_to_listpage(self,d):
         # 撤销键盘
@@ -88,6 +92,15 @@ class Greet:
         # d(resourceId="com.android.systemui:id/back", clickable=True).click()
         # time.sleep(0.2)
         logger.info('回到主页')
+
+
+
+    def black_list(self,d):
+        # 将打过招呼的人拉黑
+        nick_name = d(resourceId="cn.soulapp.android:id/title").get_text()
+        return nick_name
+
+
 
 
 if __name__ == '__main__':
