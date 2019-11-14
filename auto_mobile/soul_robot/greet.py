@@ -33,19 +33,14 @@ class Greet:
     def test(self):
         self.d.click(0.323, 0.898)
 
-    #
-    # def open_soul(self):
-    #     """
-    #     打开ｓｏｕｌ广场
-    #     """
-    #     # start soul
-    #     self.d.app_start('cn.soulapp.android')
-    #     time.sleep(3)
-
     def greet(self,d,frame):
         frame.child(resourceId="cn.soulapp.android:id/headLayout", clickable=True).click()
         time.sleep(0.5)
-        self.attent_greet(d)
+        # 存在点进去之后弹框的情况
+        try:
+            self.attent_greet(d)
+        except:
+            pass
         self.back_to_listpage(d)
 
     def just_greet(self):
@@ -92,8 +87,6 @@ class Greet:
         # d(resourceId="com.android.systemui:id/back", clickable=True).click()
         # time.sleep(0.2)
         logger.info('回到主页')
-
-
 
     def black_list(self,d):
         # 将打过招呼的人拉黑
