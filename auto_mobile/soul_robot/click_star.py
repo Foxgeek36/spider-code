@@ -14,20 +14,26 @@ logger = logging.getLogger('Soul Monitor')
 class TianGou:
     """
     soul click star
+    适配分辨率，如果不同需要该参数
+    displayHeight: 2029,
+    displayWidth: 1080,
     """
 
-    def __init__(self,deviceid):
+    def __init__(self,type,deviceid):
         """
         初始化鏈接指定的设备
         :param deviceid: 设备 device  ID
         """
         while True:
             try:
-                self.d = u2.connect_usb(deviceid)
+                if type == 'usb':
+                    self.d = u2.connect_usb(deviceid)
+                else:
+                    self.d = u2.connect_wifi(deviceid)
                 break
             except:
                 # 初始化uiautomator2 否则有可能连不上
-                os.system('python -m uiautomator2 init')
+                os.system('python3 -m uiautomator2 init')
         self.num = 0
         # 给最新的动态点赞
         self.lastest = False
@@ -122,5 +128,7 @@ if __name__ == '__main__':
     """
     存在将star 点错的问题
     """
-    tiangou = TianGou('2244261a')
+    # tiangou = TianGou('usb','2244261a')
+    tiangou = TianGou('ip','10.170.111.7')
+
     tiangou.run_spider()
