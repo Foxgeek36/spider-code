@@ -29,6 +29,9 @@ class TianGou:
                 if type == 'usb':
                     self.d = u2.connect_usb(deviceid)
                 else:
+                    os.system('python3 -m uiautomator2 init')
+                    os.system(f'adb connect {deviceid}')
+                    logger.info('初始化')
                     self.d = u2.connect_wifi(deviceid)
                 break
             except:
@@ -128,7 +131,6 @@ if __name__ == '__main__':
     """
     存在将star 点错的问题
     """
-    # tiangou = TianGou('usb','2244261a')
-    tiangou = TianGou('ip','10.170.111.7')
-
+    tiangou = TianGou('usb','2244261a')
+    # tiangou = TianGou('ip','10.170.111.7')
     tiangou.run_spider()
