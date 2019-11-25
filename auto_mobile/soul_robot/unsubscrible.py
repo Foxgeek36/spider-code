@@ -39,6 +39,7 @@ class Unsubscribe:
         # 切到我的关注
         self.d.xpath('//*[@text="我关注的"]').click()
         time.sleep(0.2)
+        self.d.swipe(500, 1500, 500, 1000)
         while True:
             self.unscribe_list()
 
@@ -68,7 +69,6 @@ class Unsubscribe:
         :param i: 列表页序号
         """
         name = self.d(resourceId="cn.soulapp.android:id/follow_sign", instance=i).get_text()
-        print(name)
         existence = redis_cli.sismember('soul:white_list', name)
         if not existence:
             # 取关后 列表会自动上移
@@ -77,7 +77,8 @@ class Unsubscribe:
             time.sleep(0.8)
             self.now_list_existence = True
             return True
-
+        else:
+            self.d.swipe(500, 1500, 500, 1300)
 
     def get_my_fans_to_redis(self):
         """
