@@ -1,3 +1,5 @@
+import time
+
 from redis import Redis
 
 class MoveRedis:
@@ -19,6 +21,13 @@ class MoveRedis:
                 datas = self.client_local.smembers(i.decode())
                 self.push_set(i.decode(),datas)
 
+
+    def soul_search_push(self):
+        keys = ['soul','soul:nicknames','soul:white_list']
+        for key in keys:
+            datas = self.client_local.smembers(key)
+            self.push_set(key, datas)
+
     def push_set(self,key,values):
         """
         将key value 备份到阿里云redis
@@ -28,6 +37,12 @@ class MoveRedis:
             self.client_taiyou.sadd(key,data)
             print(key,data)
 
+    def listen_local_soul(self):
+        while True:
+            self.soul_search_push()
+            time.sleep(10)
+
+
 
 if __name__ == '__main__':
-    MoveRedis().search_set_push()
+    MoveRedis().listen_local_soul()
