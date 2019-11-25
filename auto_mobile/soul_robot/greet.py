@@ -4,7 +4,7 @@ import os
 import logging
 from redis import Redis
 
-redis_cli = Redis()
+redis_cli = Redis(host='118.31.66.50')
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

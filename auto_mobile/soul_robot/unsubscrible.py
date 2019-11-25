@@ -14,6 +14,7 @@ logger = logging.getLogger('Soul Monitor')
 class Unsubscribe:
     """
     存在向下滑动无法加载的问题，增大单次滑动距离和增加滑动的频率可以解决
+    存在取关误操作的现象，目前无解决方案
     """
 
     def __init__(self):

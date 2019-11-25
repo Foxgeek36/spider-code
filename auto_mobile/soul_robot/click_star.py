@@ -4,7 +4,7 @@ import os
 import logging
 from redis import Redis
 from greet import Greet
-redis_cli = Redis()
+redis_cli = Redis(host='118.31.66.50')
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -90,6 +90,17 @@ class TianGou:
                 name = frame.child(resourceId="cn.soulapp.android:id/expandable_text").get_text()
             except:
                 name = str(time.time())
+
+            # 过滤地址
+            try:
+                address = frame.child(resourceId="cn.soulapp.android:id/square_item_location").get_text()
+                print(address)
+                if address not in ['Shanghai','上海市']:
+                    continue
+            except:
+                logger.info('没有地址')
+                continue
+
             if redis_cli.sismember('soul', name):
                 logger.info(f'存在该用户')
                 continue
