@@ -56,15 +56,15 @@ class TianGou:
         切换帖子列表的模式
         """
         if self.lastest:
-            self.d(resourceId="cn.soulapp.android:id/tv_tab", text="最新").click()
+            self.d(resourceId="cn.soulapp.android:id/tv_tab", text="最新").click(timeout=1)
             logger.info('切换到最新帖子模式')
         # 搜索文本内容包含上海的，提高效率（一定要有上海的搜索记录才行）
         if self.selectt_city:
             logger.info('切换到上海')
             try:
-                self.d(resourceId="cn.soulapp.android:id/searchLayout").click()
+                self.d(resourceId="cn.soulapp.android:id/searchLayout").click(timeout=1)
             except:
-                self.d(resourceId="cn.soulapp.android:id/ivSearch").click()
+                self.d(resourceId="cn.soulapp.android:id/ivSearch").click(timeout=1)
             time.sleep(0.5)
             self.d.xpath('//*[@resource-id="cn.soulapp.android:id/toolbar_search"]/android.widget.RelativeLayout[1]').set_text('上海')
             # self.d(resourceId="cn.soulapp.android:id/text_search_record",text="上海").click()
@@ -77,6 +77,7 @@ class TianGou:
             frame = self.d(resourceId="cn.soulapp.android:id/item_post_all", className="android.view.ViewGroup",
                            instance=i)
             try:
+                # 耗时超过 1s
                 center = frame.center()
             except:
                 # logger.error(f'{i},无法获取中心位置')
@@ -87,14 +88,13 @@ class TianGou:
                 continue
             # 可能没有文字
             try:
-                name = frame.child(resourceId="cn.soulapp.android:id/expandable_text").get_text()
+                name = frame.child(resourceId="cn.soulapp.android:id/expandable_text").get_text(timeout=1)
             except:
                 name = str(time.time())
 
-            # 过滤地址
+            # 过滤地址 存在没有地址但是仍能识别出在上海的情况
             try:
-                address = frame.child(resourceId="cn.soulapp.android:id/square_item_location").get_text()
-                print(address)
+                address = frame.child(resourceId="cn.soulapp.android:id/square_item_location").get_text(timeout=1)
                 if address not in ['Shanghai','上海市']:
                     continue
             except:
@@ -106,7 +106,7 @@ class TianGou:
                 continue
             # 判断小心心有没有暴露出来
             try:
-                star_distance = frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).center()
+                star_distance = frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).center(timeout=1)
                 if star_distance[1] > 1800:
                     continue
             except:

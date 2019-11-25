@@ -34,7 +34,7 @@ class Greet:
         self.d.click(0.323, 0.898)
 
     def greet(self,d,frame):
-        frame.child(resourceId="cn.soulapp.android:id/headLayout", clickable=True).click()
+        frame.child(resourceId="cn.soulapp.android:id/headLayout", clickable=True).click(timeout=1)
         time.sleep(0.5)
         # 存在点进去之后弹框的情况
         try:
@@ -67,7 +67,7 @@ class Greet:
         # 输入内容
         d(resourceId="cn.soulapp.android:id/et_sendmessage", clickable=True).send_keys('交朋友吗,交个朋友吧')
         # 发送
-        d(resourceId="cn.soulapp.android:id/btn_send", clickable=True).click()
+        d(resourceId="cn.soulapp.android:id/btn_send", clickable=True).click(timeout=1)
         logger.info('打招呼成功')
         redis_cli.sadd('soul:nicknames',nick_name)
         logger.info(f'昵称{nick_name} 已拉黑')
@@ -90,7 +90,7 @@ class Greet:
 
     def black_list(self,d):
         # 将打过招呼的人拉黑
-        nick_name = d(resourceId="cn.soulapp.android:id/title").get_text()
+        nick_name = d(resourceId="cn.soulapp.android:id/title").get_text(timeout=1)
         return nick_name
 
 

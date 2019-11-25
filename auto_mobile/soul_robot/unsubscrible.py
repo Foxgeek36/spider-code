@@ -35,13 +35,13 @@ class Unsubscribe:
         self.d.app_start('cn.soulapp.android')
         time.sleep(3)
         # 切到聊天页
-        self.d.xpath('//*[@resource-id="cn.soulapp.android:id/lotMsg"]').click()
+        self.d.xpath('//*[@resource-id="cn.soulapp.android:id/lotMsg"]').click(timeout=1)
         time.sleep(0.5)
         # 切到关注页
-        self.d.xpath('//*[@resource-id="cn.soulapp.android:id/ic_user_follow"]').click()
+        self.d.xpath('//*[@resource-id="cn.soulapp.android:id/ic_user_follow"]').click(timeout=1)
         time.sleep(0.5)
         # 切到我的关注
-        self.d.xpath('//*[@text="我关注的"]').click()
+        self.d.xpath('//*[@text="我关注的"]').click(timeout=1)
         time.sleep(0.2)
         self.d.swipe(500, 1500, 500, 1000)
         while True:
