@@ -12,6 +12,9 @@ logger = logging.getLogger('Soul Monitor')
 
 
 class Unsubscribe:
+    """
+    存在向下滑动无法加载的问题，增大单次滑动距离和增加滑动的频率可以解决
+    """
 
     def __init__(self):
         """
@@ -78,7 +81,7 @@ class Unsubscribe:
             self.now_list_existence = True
             return True
         else:
-            self.d.swipe(500, 1500, 500, 1300)
+            self.d.swipe(500, 1500, 500, 1100)
 
     def get_my_fans_to_redis(self):
         """
