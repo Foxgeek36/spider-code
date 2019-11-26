@@ -31,6 +31,9 @@ class Unsubscribe:
                 os.system('python -m uiautomator2 init')
 
     def unsubscribe_main(self):
+        """
+        取关主程序
+        """
         # start soul
         self.d.app_start('cn.soulapp.android')
         time.sleep(3)
@@ -47,8 +50,6 @@ class Unsubscribe:
         while True:
             self.unscribe_list()
 
-
-
     def unscribe_list(self):
         """
         取关当前页
@@ -64,9 +65,6 @@ class Unsubscribe:
             self.d.swipe(500, 1500, 500, 1000)
             time.sleep(0.2)
 
-
-
-
     def unscribe_one(self,i):
         """
         取关一个用户
@@ -78,7 +76,7 @@ class Unsubscribe:
             # 取关后 列表会自动上移
             self.d(resourceId="cn.soulapp.android:id/icon_follow", instance=i).click()
             logger.info(f'{name} 取关成功')
-            time.sleep(0.8)
+            time.sleep(1)
             self.now_list_existence = True
             return True
         else:
