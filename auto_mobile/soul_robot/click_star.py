@@ -28,7 +28,6 @@ class TianGou:
             try:
                 if type == 'usb':
                     self.d = u2.connect_usb(deviceid)
-                    self.d.logger.setLevel(logging.ERROR)
                 else:
                     os.system('python3 -m uiautomator2 init')
                     os.system(f'adb connect {deviceid}')
