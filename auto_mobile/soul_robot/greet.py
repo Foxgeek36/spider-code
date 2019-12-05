@@ -87,6 +87,8 @@ class Greet:
         d.press("back")
         time.sleep(0.8)
         # 回到广场列表页
+        d(resourceId="cn.soulapp.android:id/titlebar_back_ivbtn").click()
+        time.sleep(0.5)
         # d.press("back")
         # d.app_start('cn.soulapp.android')
         # time.sleep(1)
