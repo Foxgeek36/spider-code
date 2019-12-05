@@ -40,7 +40,7 @@ class Greet:
         time.sleep(0.5)
         # 存在点进去之后弹框的情况
         try:
-            if self.attent:
+            if not self.attent:
                 self.just_greet(d)
             else:
                 self.attent_greet(d)
@@ -87,10 +87,10 @@ class Greet:
         d.press("back")
         time.sleep(0.8)
         # 回到广场列表页
-        d.press("back")
-        d.app_start('cn.soulapp.android')
-        time.sleep(1)
-        logger.info('回到主页')
+        # d.press("back")
+        # d.app_start('cn.soulapp.android')
+        # time.sleep(1)
+        # logger.info('回到主页')
 
     def black_list(self,d):
         # 将打过招呼的人拉黑
