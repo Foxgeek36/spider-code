@@ -41,6 +41,7 @@ class TianGou:
         # 给最新的动态点赞
         self.lastest = False
         self.selectt_city = False
+        self.content = '为什么大部分人在利益面前会丧失良知或者动摇立场'
 
     def open_soul(self):
         """
@@ -114,7 +115,7 @@ class TianGou:
             frame.child(resourceId="cn.soulapp.android:id/iv_like", clickable=True).click_exists(timeout=1)
             self.num += 1
             logger.info(f'{self.num},点击完成,{name}')
-            Greet().greet(self.d,frame)
+            Greet(self.content).greet(self.d,frame)
             redis_cli.sadd('soul', name)
 
 

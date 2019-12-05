@@ -13,7 +13,7 @@ logger = logging.getLogger('Soul Monitor')
 
 class Greet:
 
-    def __init__(self):
+    def __init__(self,content):
         """
         初始化鏈接指定的设备
         :param deviceid: 设备 device  ID
@@ -29,6 +29,8 @@ class Greet:
         # 给最新的动态点赞
         self.lastest = False
         self.selectt_city = False
+        self.content = content
+        self.attent = False
 
     def test(self):
         self.d.click(0.323, 0.898)
@@ -38,13 +40,17 @@ class Greet:
         time.sleep(0.5)
         # 存在点进去之后弹框的情况
         try:
-            self.attent_greet(d)
+            if self.attent:
+                self.just_greet(d)
+            else:
+                self.attent_greet(d)
         except:
             pass
         self.back_to_listpage(d)
 
-    def just_greet(self):
-        pass
+    def just_greet(self,d):
+        d.click(0.726, 0.9)
+        self.write_send_out(d)
 
     def attent_greet(self,d):
         # 关注
@@ -65,7 +71,7 @@ class Greet:
         except:
             print('imog发不了')
         # 输入内容
-        d(resourceId="cn.soulapp.android:id/et_sendmessage", clickable=True).send_keys('交朋友吗,交个朋友吧')
+        d(resourceId="cn.soulapp.android:id/et_sendmessage", clickable=True).send_keys(self.content)
         # 发送
         d(resourceId="cn.soulapp.android:id/btn_send", clickable=True).click(timeout=1)
         logger.info('打招呼成功')
@@ -84,8 +90,6 @@ class Greet:
         d.press("back")
         d.app_start('cn.soulapp.android')
         time.sleep(1)
-        # d(resourceId="com.android.systemui:id/back", clickable=True).click()
-        # time.sleep(0.2)
         logger.info('回到主页')
 
     def black_list(self,d):
@@ -97,7 +101,7 @@ class Greet:
 
 
 if __name__ == '__main__':
-    Greet().test()
+    Greet('ddd').test()
 
 
 
